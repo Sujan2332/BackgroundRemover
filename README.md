@@ -1,4 +1,4 @@
-<div align="center"> #  *Background Remover App 🎨✨*
+# <div align="center"> *Background Remover App 🎨✨*
 
 ## *Overview 🌟*
 *A sleek and efficient web application that removes the background from images! Upload or drag-and-drop your image, and watch as the background gets removed instantly! 🎉*
