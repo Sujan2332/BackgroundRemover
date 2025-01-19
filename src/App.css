@@ -2,8 +2,7 @@
 
 html, body {
   /* background: linear-gradient(135deg, blue 0%, red 100%); */
-  background-color: red;
- /* Same color as theme-color */
+  background-color: black;
   margin: 0;
   padding: 0;
 }
