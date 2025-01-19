@@ -3,6 +3,9 @@
 ## *Overview 🌟*
 *A sleek and efficient web application that removes the background from images! Upload or drag-and-drop your image, and watch as the background gets removed instantly! 🎉*
 
+## *Preview 🎞️*
+*[Click here to cut-out the Background](https://sujan2332.github.io/BackgroundRemover/)*
+
 ## *Features* 🛠️
 
 - *Image Upload 🖼️:*
