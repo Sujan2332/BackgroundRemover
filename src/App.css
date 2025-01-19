@@ -256,12 +256,22 @@ h1 {
 }
 
 @media (max-width: 768px) {
+  .container{
+    max-width: 768px;
+  }
   .main {
     margin: 1rem;
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
+    width: 100%;
+    /* border: 2px solid red; */
+    margin: 0px;
+  }
+  .upload-area{
+    margin: 0px;
+    padding: 0px;
+    padding: 10px 10px;
   }
   
   h1 {

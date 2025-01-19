@@ -11,10 +11,45 @@ function App() {
   const containerRef = useRef(null)
   const fileInputRef = useRef(null)
 
+  console.log("Slected IMage",selectedImage)
+
+  const resizeImage = (file, maxWidth, maxHeight, callback) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        let width = img.width;
+        let height = img.height;
+  
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          } else {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+  
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL("image/jpeg", 0.7)); // Adjust quality (0.7 for 70%)
+      };
+    };
+  };
+  
+
   const handleImageUpload = async (event) => {
     const file = event.target.files[0]
     if (file) {
-      setSelectedImage(file)
+      resizeImage(file, 800, 800, (resizedDataURL) => {
+        setSelectedImage({ file, preview: resizedDataURL });
+      });
       setProcessedImage(null)
       setError(null)
       // Automatically process image for preview
@@ -26,7 +61,9 @@ function App() {
     event.preventDefault()
     const file = event.dataTransfer.files[0]
     if (file) {
-      setSelectedImage(file)
+      resizeImage(file, 800, 800, (resizedDataURL) => {
+        setSelectedImage({ file, preview: resizedDataURL });
+      });
       setProcessedImage(null)
       setError(null)
       // Automatically process image for preview
@@ -86,17 +123,24 @@ function App() {
   }
 
   const handleDownload = () => {
-    if (processedImage && selectedImage) {
-      const originalName = selectedImage.name.split('.').slice(0, -1).join('.');
+    if (processedImage) {
+      // Safely access the file name within selectedImage
+      const originalName = selectedImage?.file?.name
+        ? selectedImage.file.name.split('.').slice(0, -1).join('.')
+        : 'processed-image'; // Fallback name if no file is selected
+  
       const downloadName = `${originalName}-removedbg.png`;
-      const link = document.createElement('a')
-      link.href = processedImage
-      link.download = downloadName
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      const link = document.createElement('a');
+      link.href = processedImage;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error("No processed image available for download.");
     }
-  }
+  };
+  
 
   const handleNewImage = () => {
     if (fileInputRef.current) {
@@ -161,7 +205,7 @@ function App() {
                           />
                         )}
                         <img
-                          src={URL.createObjectURL(selectedImage)}
+                          src={selectedImage?.preview}
                           alt="Original"
                           className="original-image"
                           style={{
