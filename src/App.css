@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap');
 
+html, body {
+  background-color: black; /* Same color as theme-color */
+  margin: 0;
+  padding: 0;
+}
 *{
   font-family: "Edu AU VIC WA NT Hand", serif;
 }
