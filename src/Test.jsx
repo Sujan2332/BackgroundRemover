@@ -8,47 +8,15 @@ function App() {
   const [error, setError] = useState(null);
   const [sliderPosition, setSliderPosition] = useState(50);
   const [format, setFormat] = useState('auto');  // Default format to 'auto'
-  const [resolution, setResolution] = useState('preview');  // Default resolution to 'preview'
+  const [resolution, setResolution] = useState('full');  // Set default resolution to 'full' for highest quality
   const sliderRef = useRef(null);
   const containerRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const resizeImage = (file, maxWidth, maxHeight, callback) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxWidth || height > maxHeight) {
-          if (width > height) {
-            height = (height * maxWidth) / width;
-            width = maxWidth;
-          } else {
-            width = (width * maxHeight) / height;
-            height = maxHeight;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL("image/jpeg", 0.7)); // Adjust quality (0.7 for 70%)
-      };
-    };
-  };
-
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      resizeImage(file, 800, 800, (resizedDataURL) => {
-        setSelectedImage({ file, preview: resizedDataURL });
-      });
+      setSelectedImage({ file, preview: URL.createObjectURL(file) });
       setProcessedImage(null);
       setError(null);
       await processImageForPreview(file);
@@ -70,8 +38,8 @@ function App() {
         },
         body: formData,
         params: {
-          resolution,  // Send selected resolution
-          format,      // Send selected format
+          resolution,  // Send selected resolution ('full' for highest quality)
+          format,      // Send selected format ('auto' to decide best format)
         },
       });
 
@@ -215,7 +183,7 @@ function App() {
                         Download Image
                       </button>
                     </div>
-                    <div className='additional-options'>
+                    <div className="additional-options">
                     {/* Dropdown for format selection */}
                     <div className="format-selection">
                       <label>Format:</label>
