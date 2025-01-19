@@ -147,6 +147,7 @@ h1 {
   width: 40px;
   height: 40px;
   background: white;
+  background: linear-gradient(135deg,blue 0%,red 100%);
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -162,6 +163,7 @@ h1 {
   width: 10px;
   height: 2px;
   background: #667eea;
+  background: rgb(255, 255, 255);
   transform: rotate(45deg);
   border: 2px ;
 }
@@ -187,6 +189,10 @@ h1 {
   align-items: center;
   justify-content: center;
   padding: 2rem;
+}
+
+.loading-container p{
+  color: white;
 }
 
 .loading-spinner {
@@ -257,11 +263,14 @@ h1 {
 }
 
 .error {
-  color: #e53e3e;
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 800;
   text-align: center;
   margin: 1rem 0;
   padding: 0.5rem;
   background: #fff5f5;
+  background: transparent;
   border-radius: 8px;
 }
 
