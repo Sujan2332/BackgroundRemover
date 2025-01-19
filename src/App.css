@@ -79,6 +79,8 @@ h1 {
   flex-direction: column;
   gap: 0.5rem;
   color: #4a5568;
+  color: white;
+  font-weight: 400;
 }
 
 .upload-prompt span {
@@ -87,6 +89,8 @@ h1 {
 
 .upload-prompt small {
   color: #718096;
+  color: white;
+  text-decoration: underline;
 }
 
 .comparison-slider {
