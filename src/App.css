@@ -51,7 +51,7 @@ h1 {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
 }
 
 .upload-area:hover {
@@ -153,6 +153,7 @@ h1 {
   height: 2px;
   background: #667eea;
   transform: rotate(45deg);
+  border: 2px ;
 }
 
 .slider-handle::after {
@@ -260,7 +261,7 @@ h1 {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    /* width: 100%; */
   }
   
   h1 {

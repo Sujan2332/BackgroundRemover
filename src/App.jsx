@@ -25,7 +25,7 @@ function App() {
   const handleDrop = async (event) => {
     event.preventDefault()
     const file = event.dataTransfer.files[0]
-    if (file && file.type.startsWith('image/')) {
+    if (file) {
       setSelectedImage(file)
       setProcessedImage(null)
       setError(null)
@@ -86,10 +86,12 @@ function App() {
   }
 
   const handleDownload = () => {
-    if (processedImage) {
+    if (processedImage && selectedImage) {
+      const originalName = selectedImage.name.split('.').slice(0, -1).join('.');
+      const downloadName = `${originalName}-removedbg.png`;
       const link = document.createElement('a')
       link.href = processedImage
-      link.download = 'removed-background.png'
+      link.download = downloadName
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -97,10 +99,10 @@ function App() {
   }
 
   const handleNewImage = () => {
-    if(fileInputRef.current){
-    fileInputRef.current?.click()
-    } else{
-      console.error("File input refernce is not initialized")
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    } else {
+      console.error("File input reference is not initialized")
     }
   }
 
@@ -114,103 +116,107 @@ function App() {
   return (
     <div className="container">
       <h1>Background Remover</h1>
-      <div className='main'>
-
-      {!selectedImage ? (
-        <div 
-          className="upload-area"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            id="file-input"
-            className="file-input"
-            ref={fileInputRef}
-          />
-          <label htmlFor="file-input" className="upload-label">
-            <div className="upload-prompt">
-              <span>Drop your image here or click to upload</span>
-              <small>Supports: JPG, PNG</small>
-            </div>
-          </label>
-        </div>
-      ) : (
-        <>
-          {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Processing your image...</p>
-            </div>
-          ) : (
-            <>
-              {error ? (
-                <div className="error">{error}</div>
-              ) : (
-                <>
-                  <div 
-                    className="comparison-slider"
-                    ref={containerRef}
-                  >
-                    <div className="image-container">
-                      {processedImage && (
+      <div className="main">
+        {!selectedImage ? (
+          <div
+            className="upload-area"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              id="file-input"
+              className="file-input"
+              ref={fileInputRef}
+            />
+            <label htmlFor="file-input" className="upload-label">
+              <div className="upload-prompt">
+                <span>Drop your image here or click to upload</span>
+                <small>Supports all image formats except GIF's</small>
+              </div>
+            </label>
+          </div>
+        ) : (
+          <>
+            {loading ? (
+              <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Processing your image...</p>
+              </div>
+            ) : (
+              <>
+                {error ? (
+                  <div className="error">{error}</div>
+                ) : (
+                  <>
+                    <div className="comparison-slider" ref={containerRef}>
+                      <div className="image-container">
+                        {processedImage && (
+                          <img
+                            src={processedImage}
+                            alt="Processed"
+                            className="processed-image"
+                          />
+                        )}
                         <img
-                          src={processedImage}
-                          alt="Processed"
-                          className="processed-image"
+                          src={URL.createObjectURL(selectedImage)}
+                          alt="Original"
+                          className="original-image"
+                          style={{
+                            clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)`,
+                          }}
                         />
-                      )}
-                      <img
-                        src={URL.createObjectURL(selectedImage)}
-                        alt="Original"
-                        className="original-image"
-                        style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
-                      />
-                      <div 
-                        className="slider-line"
-                        ref={sliderRef}
-                        style={{ left: `${sliderPosition}%` }}
-                      >
-                        <div className="slider-handle"></div>
+                        <div
+                          className="slider-line"
+                          ref={sliderRef}
+                          style={{ left: `${sliderPosition}%` }}
+                        >
+                          <div className="slider-handle"></div>
+                        </div>
                       </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={sliderPosition}
+                        onChange={handleSliderChange}
+                        className="slider-input"
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={handleMouseUp}
+                        onTouchStart={handleMouseDown}
+                        onTouchEnd={handleMouseUp}
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={sliderPosition}
-                      onChange={handleSliderChange}
-                      className="slider-input"
-                      onMouseDown={handleMouseDown}
-                      onMouseUp={handleMouseUp}
-                      onTouchStart={handleMouseDown}
-                      onTouchEnd={handleMouseUp}
-                    />
-                  </div>
-                  <div className="button-container">
-                    <button onClick={handleNewImage} className="new-image-button">
-                      Upload New Image
-                    </button>
-                    <input
-      type="file"
-      accept="image/*"
-      ref={fileInputRef}
-      className="file-input"
-      onChange={handleImageUpload}
-    />
-                    <button onClick={handleDownload} className="download-button">
-                      Download Image
-                    </button>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-        </>
-      )}
-    </div>
+                    <div className="button-container">
+                      <button
+                        onClick={handleNewImage}
+                        className="new-image-button"
+                      >
+                        Upload New Image
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="file-input"
+                        onChange={handleImageUpload}
+                      />
+                      <button
+                        onClick={handleDownload}
+                        className="download-button"
+                      >
+                        Download Image
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
